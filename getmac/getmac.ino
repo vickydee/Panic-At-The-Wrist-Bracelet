@@ -1,9 +1,9 @@
 #include <WiFi.h>
+#include <esp_wifi.h>
 
 void printMacAddress() {
   uint8_t baseMac[6];
-  // Get the base MAC address
-  esp_read_mac(baseMac, ESP_MAC_WIFI_STA);
+  esp_wifi_get_mac(WIFI_IF_STA, baseMac);
   
   Serial.print("MAC Address: ");
   for (int i = 0; i < 6; ++i) {
