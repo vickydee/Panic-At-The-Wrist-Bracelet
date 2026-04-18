@@ -2,7 +2,9 @@
 
 void setup() {
   Serial.begin(115200);
-  delay(1000);
+  delay(2000);  // Give Serial Monitor time to connect
+  
+  Serial.println("\n\n===== ESP32-S3 MAC Address Reader =====");
   
   // Method 1: Get MAC as formatted string (simplest)
   Serial.print("MAC Address (String): ");
