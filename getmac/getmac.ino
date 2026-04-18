@@ -1,25 +1,21 @@
 #include <WiFi.h>
-#include <esp_wifi.h>
-
-void printMacAddress() {
-  uint8_t baseMac[6];
-  esp_wifi_get_mac(WIFI_IF_STA, baseMac);
-  
-  Serial.print("MAC Address: ");
-  for (int i = 0; i < 6; ++i) {
-    Serial.printf("%02x", baseMac[i]);
-    if (i < 5)
-      Serial.print(":");
-  }
-  Serial.println();
-}
 
 void setup() {
   Serial.begin(115200);
-  delay(2000);
+  delay(1000);
   
-  Serial.println("\n\n===== ESP32 MAC Address Reader =====");
-  printMacAddress();
+  Serial.println("");
+  Serial.println("ESP32 MAC Address");
+  Serial.println("=================");
+  
+  // Get MAC address using WiFi library (works on all ESP32 variants)
+  WiFi.mode(WIFI_STA);
+  delay(100);
+  
+  Serial.print("MAC: ");
+  Serial.println(WiFi.macAddress());
+  
+  Serial.println("Done");
 }
 
 void loop() {
