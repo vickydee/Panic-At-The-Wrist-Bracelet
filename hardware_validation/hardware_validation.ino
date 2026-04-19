@@ -32,7 +32,6 @@ const int TOUCH_PIN = 11;
 
 // Piezo Buzzer
 const int BUZZER_PIN = 45;
-const int BUZZER_LEDC_CHANNEL = 0;
 const int BUZZER_LEDC_RESOLUTION = 10;
 const int BUZZER_TEST_TONE_HZ = 2000;
 const unsigned long BUZZER_TEST_DURATION_MS = 500;
@@ -198,9 +197,14 @@ void setupBuzzerValidation() {
   // fixed-frequency PWM tone for "on" and silence for "off".
   // If you hear nothing during the beep test, check buzzer polarity, wiring,
   // shared ground, and whether the module is truly a passive buzzer.
-  ledcSetup(BUZZER_LEDC_CHANNEL, 2000, BUZZER_LEDC_RESOLUTION);
-  ledcAttachPin(BUZZER_PIN, BUZZER_LEDC_CHANNEL);
-  ledcWriteTone(BUZZER_LEDC_CHANNEL, 0);
+  if (!ledcAttach(BUZZER_PIN, BUZZER_TEST_TONE_HZ, BUZZER_LEDC_RESOLUTION)) {
+    Serial.println("[BUZZER] FAIL: Could not attach buzzer pin to LEDC.");
+    Serial.println("[BUZZER] Meaning: this GPIO may not support LEDC output or the pin is already in use.");
+    Serial.println();
+    return;
+  }
+
+  ledcWriteTone(BUZZER_PIN, 0);
 
   Serial.println("[BUZZER] PWM output ready.");
   Serial.println();
@@ -225,9 +229,9 @@ void runBuzzerValidation() {
   Serial.printf("[BUZZER] Turning buzzer ON at %d Hz for %lu ms\n",
                 BUZZER_TEST_TONE_HZ, BUZZER_TEST_DURATION_MS);
 
-  ledcWriteTone(BUZZER_LEDC_CHANNEL, BUZZER_TEST_TONE_HZ);
+  ledcWriteTone(BUZZER_PIN, BUZZER_TEST_TONE_HZ);
   delay(BUZZER_TEST_DURATION_MS);
-  ledcWriteTone(BUZZER_LEDC_CHANNEL, 0);
+  ledcWriteTone(BUZZER_PIN, 0);
 
   Serial.println("[BUZZER] Buzzer OFF.");
   Serial.println("[BUZZER] PASS if you heard one clear beep.");
